@@ -1,26 +1,35 @@
 #!/usr/bin/python3
-"""fetches information from JSONplaceholder API and exports to CSV"""
 
-from csv import DictWriter, QUOTE_ALL
+"""
+Python script that exports data in the CSV format
+"""
+
 from requests import get
 from sys import argv
-
+import csv
 
 if __name__ == "__main__":
-    main_url = "https://jsonplaceholder.typicode.com"
-    todo_url = main_url + "/user/{}/todos".format(argv[1])
-    name_url = main_url + "/users/{}".format(argv[1])
-    todo_result = get(todo_url).json()
-    name_result = get(name_url).json()
+    response = get('https://jsonplaceholder.typicode.com/todos/')
+    data = response.json()
 
-    todo_list = []
-    for todo in todo_result:
-        todo_dict = {}
-        todo_dict.update({"user_ID": argv[1], "username": name_result.get(
-            "username"), "completed": todo.get("completed"),
-                          "task": todo.get("title")})
-        todo_list.append(todo_dict)
-    with open("{}.csv".format(argv[1]), 'w', newline='') as f:
-        header = ["user_ID", "username", "completed", "task"]
-        writer = DictWriter(f, fieldnames=header, quoting=QUOTE_ALL)
-        writer.writerows(todo_list)
+    row = []
+    response2 = get('https://jsonplaceholder.typicode.com/users')
+    data2 = response2.json()
+
+    for i in data2:
+        if i['id'] == int(argv[1]):
+            employee = i['username']
+
+    with open(argv[1] + '.csv', 'w', newline='') as file:
+        writ = csv.writer(file, quoting=csv.QUOTE_ALL)
+
+        for i in data:
+
+            row = []
+            if i['userId'] == int(argv[1]):
+                row.append(i['userId'])
+                row.append(employee)
+                row.append(i['completed'])
+                row.append(i['title'])
+
+                writ.writerow(row)
