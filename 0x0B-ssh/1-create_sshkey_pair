@@ -1,3 +1,17 @@
 #!/usr/bin/env bash
 #creates an RSA keypair
-ssh-keygen -b 4096 -f school -N betty
+#!/bin/bash
+
+# Define variables
+KEY_NAME="school"
+PASSPHRASE="betty"
+BITS=4096
+
+# Generate the RSA key pair
+ssh-keygen -t rsa -b $BITS -C "" -f ~/.ssh/$KEY_NAME -N $PASSPHRASE
+
+# Output the location of the created keys
+echo "RSA key pair created:"
+echo "Private key: ~/.ssh/$KEY_NAME"
+echo "Public key: ~/.ssh/${KEY_NAME}.pub"
+
